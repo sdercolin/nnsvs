@@ -166,6 +166,27 @@ def prep_ph2num(sinsy_dic):
 
     return ph2num
 
+def prep_ph2num_c(sinsy_dic):
+    sinsy_phone_mapping = {}
+    with open(join(sinsy_dic, "chinese.table"), encoding="UTF-8") as f:
+        for l in f:
+            s = l.strip().split()
+            key = s[0]
+            sinsy_phone_mapping[key] = s[1:]
+    ph2num = {}
+    counter = 0
+    for p in ["sil", "pau", "br"]:
+        ph2num[p] = counter
+        counter += 1
+    for k, v in sinsy_phone_mapping.items():
+        for p in v:
+            if p not in ph2num:
+                ph2num[p] = counter
+                counter += 1
+    # undef
+    ph2num["xx"] = counter
+
+    return ph2num
 
 def ph2numeric(contexts, ph2num):
     return [ph2num[k] for k in contexts]
